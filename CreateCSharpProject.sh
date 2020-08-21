@@ -20,6 +20,7 @@ createLib() {
     dotnet new classlib -lang C#
     cd ..
 }
+
 createLibWithTest() {
     libName=$1
     testName=$2
@@ -60,3 +61,5 @@ do
     shift
 done
 
+git init
+touch README.md && '$projectName' >> README.md

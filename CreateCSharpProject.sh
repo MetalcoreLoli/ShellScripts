@@ -57,6 +57,9 @@ do
             dotnet sln add $libName 
             dotnet sln add $testName
             shift ;;
+        -nu)
+            dotnet add package $2 
+            shift ;;
     esac
     shift
 done

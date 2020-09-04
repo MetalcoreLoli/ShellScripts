@@ -8,6 +8,10 @@ while [ -n "$1" ]; do
         -l) 
             link=$2
             shift;;
+        -d)
+            mkdir "$2" && cd "$2"
+            printf "directory [\033[38;2;0;156;0m$2\033[39m] was created\n"
+            shift;;
     esac
     shift
 done

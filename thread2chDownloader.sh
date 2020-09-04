@@ -16,7 +16,7 @@ while [ -n "$1" ]; do
     shift
 done
 
-threadName=`echo "$link" | grep -o "#[0-9]*" | sed 's/^.//'`
+threadName=`echo "$link" | grep -o "(#[0-9]*)|(/[0-9]*)" | sed 's/^.//'`
 boardName=`echo $link | grep -o "/./res" | sed "s/\/res//"`
 fileRegex="$boardName/src/$threadName\S*"
 filesFromThread=$(curl $link | grep -o "$fileRegex" | sed 's/"//' | sed 's/>//' )

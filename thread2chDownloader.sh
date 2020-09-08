@@ -2,6 +2,8 @@
 declare link
 declare threadName
 declare filesFromThread
+declare fileRegex
+declare archDate=""
 
 while [ -n "$1" ]; do
     case "$1" in 
@@ -12,16 +14,21 @@ while [ -n "$1" ]; do
             mkdir "$2" && cd "$2"
             printf "directory [\033[38;2;0;156;0m$2\033[39m] was created\n"
             shift;;
+        -ad)
+            archDate=$2
+            shift;;
     esac
     shift
 done
 
 threadName=`echo "$link" | grep -o -E '([0-9]+.html)'| sed 's/\(\.html\)//g'`
-boardName=`echo $link | grep -o "/./res" | sed "s/\/res//"`
+boardName=`echo $link | grep -o -E "hk+/./" | sed 's/\(hk\|.$\)//g'`
+
 fileRegex="$boardName/src/$threadName/\S*"
+
+echo $fileRegex
+
 filesFromThread=$(curl $link | grep -o -E "$fileRegex" | sed 's/\("\|>\)//g'| sort -u)
-
-
 
 begin=$(date | grep -o -E '([0-9]{2}:[0-9]{2}:[0-9]{2})+|([0-9]:[0-9]:[0-9])+')
 

@@ -5,6 +5,7 @@
 ################################
 declare cmake_version="3.21.0"
 declare project_name=$1
+declare lib_name="$1-lib"
 
 declare cmake_file="CMakeLists.txt"
 
@@ -25,9 +26,10 @@ function init_git () {
 function generating_cmake_test_lib () {
     cd tests
 
-    printf "add_executable (unit-tests main.cpp)\n"       >> $cmake_file 
-    printf "target_link_libraries (unit-tests pthread)\n" >> $cmake_file 
-    printf "target_link_libraries (unit-tests gtest)\n"   >> $cmake_file 
+    printf "add_executable (unit-tests main.cpp)\n"         >> $cmake_file 
+    printf "target_link_libraries (unit-tests pthread)\n"   >> $cmake_file 
+    printf "target_link_libraries (unit-tests gtest)\n"     >> $cmake_file 
+    printf "target_link_libraries (unit-tests $lib_name)\n" >> $cmake_file 
 
     printf "#include <gtest/gtest.h>\n\n"     >> main.cpp
     printf "TEST (test, test) {\n"            >> main.cpp
@@ -39,10 +41,18 @@ function generating_cmake_test_lib () {
     cd ..
 }
 
+function generating_cmake_proj_lib () {
+    cd $lib_name && mkdir src 
+    cd src && mkdir $lib_name && cd ..
+    printf "add_library ($lib_name)\n" >> $cmake_file
+    printf "target_include_directories ($lib_name PUBLIC \"\${CMAKE_CURRENT_SOURCE_DIR}/src\")" >> $cmake_file
+    cd ..
+}
+
 function generating_cmake_file () {
     printf "cmake_minimum_required(VERSION $cmake_version)\n" >> $cmake_file 
     printf "project ($project_name)\n"    >> $cmake_file 
-    printf "add_subdirectory (src)\n"     >> $cmake_file 
+    printf "add_subdirectory ($lib_name)\n"     >> $cmake_file 
     printf "add_subdirectory (tests)\n"   >> $cmake_file 
 }
 
@@ -52,10 +62,11 @@ function generating_cmake_file () {
 function main () {
     # creating project folders
     mkdir $project_name && cd $project_name 
-    mkdir src && mkdir tests
+    mkdir $lib_name && mkdir tests
 
     # generating cmake files
     generating_cmake_file
+    generating_cmake_proj_lib
     generating_cmake_test_lib
     printf "" >> src/$cmake_file
 

@@ -43,8 +43,10 @@ function generating_cmake_test_lib () {
 
 function generating_cmake_proj_lib () {
     cd $lib_name && mkdir src 
-    cd src && mkdir $lib_name && cd ..
-    printf "add_library ($lib_name)\n" >> $cmake_file
+    cd src && mkdir $lib_name 
+    printf "#include <iostream>\n void hello() {\n\tstd::cout << \"Hello, World\"<<std::endl;\n}" >> $lib_name/hello.cpp
+    cd ..
+    printf "add_library ($lib_name src/$lib_name/hello.cpp)\n" >> $cmake_file
     printf "target_include_directories ($lib_name PUBLIC \"\${CMAKE_CURRENT_SOURCE_DIR}/src\")" >> $cmake_file
     cd ..
 }

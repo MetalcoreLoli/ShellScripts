@@ -54,6 +54,7 @@ function generating_cmake_proj_lib () {
 function generating_cmake_file () {
     printf "cmake_minimum_required(VERSION $cmake_version)\n" >> $cmake_file 
     printf "project ($project_name)\n"    >> $cmake_file 
+    printf "set(CMAKE_EXPORT_COMPILE_COMMANDS 1)" >> $cmake_file
     printf "add_subdirectory ($lib_name)\n"     >> $cmake_file 
     printf "add_subdirectory (tests)\n"   >> $cmake_file 
 }
